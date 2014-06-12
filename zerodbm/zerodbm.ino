@@ -12,16 +12,15 @@ void setup()
 
 void loop()
 {
-   int i, t;
+   static int adc = 0;
    
-   for (i=1; i<6; i++)
-      redFlash(i, FT);
-   for (i=1; i<6; i++)
-      greenFlash(i, FT);
-   ADCtoLed(100)
-   sos();
-   ledBlack(2000);
+   Serial.print(adc);
+   Serial.println();
 
+   ADCtoLed(adc);
+   adc++;
+   
+   //sos();
   
    //int diodeIn;
    
@@ -43,47 +42,47 @@ void ADCtoLed(int adc)
    }
    //9	467	r9
    if (adc>=467){
-      redFlash(9, FT); 
+      redShort(9); 
       return;
    }
    //8	407	r8
    if (adc>=407){
-      redFlash(8, FT);
+      redShort(8);
       return;
    }
    //7	353	r7
    if (adc>=353){
-      redFlash(7, FT);
+      redShort(7);
       return;
    }
    //6	306	r6
    if (adc>=306){
-      redFlash(6, FT);
+      redShort(6);
       return;
    }
    //5	267	r5
    if (adc>=267){
-      redFlash(5, FT);
+      redShort(5);
       return;
    }
    //4	231	r4
    if (adc>=251){
-      redFlash(4, FT);
+      redShort(4);
       return;
    }
    //3	199	r3
    if (adc>=199){
-      redFlash(3, FT);
+      redShort(3);
       return;
    }
    //2	170	r2
    if (adc>=170){
-      redFlash(2, FT);
+      redShort(2);
       return;
    }
    //1	146	r1
    if (adc>=146){
-      redFlash(1, FT);
+      redShort(1);
       return;
    }
    //0	125	gsolid
@@ -93,87 +92,77 @@ void ADCtoLed(int adc)
    }
   //-1	107	g1
      if (adc>=107){
-      greenFlash(1, FT);
+      greenShort(1);
       return;
    }
    //-2	91	g2
    if (adc>=91){
-      greenFlash(2, FT);
+      greenShort(2);
       return;
    }
    //-3	77	g3
    if (adc>=77){
-      greenFlash(3, FT);
+      greenShort(3);
       return;
    }
    //-4	65	g4
    if (adc>=65){
-      greenFlash(4, FT);
+      greenShort(4);
       return;
    }
    //-5	55	g5
    if (adc>=55){
-      greenFlash(5, FT);
+      greenShort(5);
       return;
    }
    //-6	46	g6
    if (adc>=46){
-      greenFlash(6, FT);
+      greenShort(6);
       return;
    }
    //-7	38	g7
    if (adc>=38){
-      greenFlash(7, FT);
+      greenShort(7);
       return;
    }
    //-8	32	g8
    if (adc>=32){
-      greenFlash(8, FT);
+      greenShort(8);
       return;
    }
    //-9	26	g9
    if (adc>=26){
-      greenFlash(9, FT);
+      greenShort(9);
       return;
    }
    // -10	22	g10
    if (adc>=22){
-      greenFlash(10, FT);
+      greenShort(10);
       return;
    }
    //-11	18	g1/1
    if (adc>=18){
-      greenFlash(1, FT);
-      delay(FT)
-      greenFlash(1, FT);
+      greenShort(11);
       return;
    }
    //-12	15	g1/2
    if (adc>=15){
-      greenFlash(1, FT);
-      delay(FT)
-      greenFlash(2, FT);
+      greenShort(12);
       return;
    }
    //-13	12	g1/3
    if (adc>=12){
-      greenFlash(1, FT);
-      delay(FT)
-      greenFlash(3, FT);
+      greenShort(13);
       return;
    }
    //-14	10	g1/4
    if (adc>=10){
-      greenFlash(1, FT);
-      delay(FT)
-      greenFlash(4, FT);
+      greenShort(14);
       return;
    }
    //-15	8	g1/5
    if (adc>=8){
-      greenFlash(1, FT);
-      delay(FT)
-      greenFlash(5, FT);
+      greenShort(15);
       return;
    }
    //-16	6	black
@@ -185,26 +174,34 @@ void ADCtoLed(int adc)
 
 
 
-void redFlash(int n, int t)
+void redDot(int n)
 {
    int i;
    
    for (i=0; i < n; i++) {
-      ledRed(t);
-      ledBlack(t);
+      ledRed(FT);
+      ledBlack(FT);
    }  
-   ledBlack(t);
 }
 
-void greenFlash(int n, int t)
+void redDash(int n)
 {
    int i;
    
    for (i=0; i < n; i++) {
-      ledGreen(t);
-      ledBlack(t);
+      ledRed(3*FT);
+      ledBlack(FT);
    }  
-   ledBlack(t);
+}
+
+void greenDot(int n)
+{
+   int i;
+   
+   for (i=0; i < n; i++) {
+      ledGreen(FT);
+      ledBlack(FT);
+   }  
 }
 
 
@@ -229,6 +226,45 @@ void ledGreen(int t)
    digitalWrite(GreenPin, HIGH);
    delay(t);
 }
+
+void redShort(n)
+//for n in range 1..9
+{
+   if ((n < 1) || (n>9))
+      outOfRange("redShort", n);
+
+   if (n > 5) {
+     redDash(1);
+     switch(n){
+       case 9:
+         n = 1; break;
+       case 8:
+         n = 2; break;
+       case 7:
+         n = 3; break;
+       case 6:
+         n = 4; break;
+       default:
+     }
+   }
+   switch(n){
+     case 9:
+     case 8:
+     case 7:
+   
+}
+
+void greenShort(n)
+//for n in range 1..15
+{
+  
+}
+
+void outOfRange()
+      //out of range
+      Serial.print("redShort OOR");
+      Serial.println(n);
+      sos();
 
 void sos()
 {
